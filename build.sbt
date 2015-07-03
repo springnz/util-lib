@@ -7,6 +7,7 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= Seq(
+  "ch.qos.logback" % "logback-classic" % "1.1.3",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0",
   "org.scalatest" %% "scalatest" % "2.2.4"
 )
