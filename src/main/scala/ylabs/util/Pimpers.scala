@@ -11,16 +11,16 @@ import scala.util.{ Failure, Success, Try }
 object Pimpers {
 
   implicit class TryPimper[A](t: Try[A]) {
-    def withErrorLog(msg: String)(implicit log: Logger) =
+    def withErrorLog(msg: String)(implicit log: Logger): Try[A] =
       t.recoverWith {
         case e ⇒
           log.error(msg, e)
           Failure(e)
       }
 
-    def withFinally[T](block: ⇒ T) =
+    def withFinally[T](block: ⇒ T): Try[A] =
       t match {
-        case Success(result) ⇒
+        case Success(result: A) ⇒
           block
           Success(result)
         case Failure(e) ⇒
@@ -30,10 +30,12 @@ object Pimpers {
   }
 
   implicit class FuturePimper[T](f: Future[T]) {
-    def withErrorLog(msg: String)(implicit log: Logger, ec: ExecutionContext) =
+    def withErrorLog(msg: String)(implicit log: Logger, ec: ExecutionContext): Future[T] = {
       f.onFailure {
         case e ⇒ log.error(msg, e)
       }
+      f
+    }
   }
 
   // convenient for scalatest comparisons of OffsetDateTime
