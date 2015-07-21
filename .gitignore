@@ -15,3 +15,6 @@ ctags
 *.swp
 .tags
 .ensime*
+*.sublime-project
+*.sublime-workspace
+
