@@ -38,6 +38,14 @@ object Pimpers {
     }
   }
 
+  implicit class OptionPimper[T](o: Option[T]) {
+    def withErrorLog(msg: String)(implicit log: Logger): Option[T] =
+      o.orElse {
+        log.error(msg)
+        None
+      }
+  }
+
   // convenient for scalatest comparisons of OffsetDateTime
   class OrderedOffsetDateTime(offsetDateTime: OffsetDateTime) extends Ordered[OffsetDateTime] {
     def compare(that: OffsetDateTime): Int = offsetDateTime.compareTo(that)
