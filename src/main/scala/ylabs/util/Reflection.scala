@@ -18,15 +18,14 @@ object Reflection {
     instance
   }
 
-  def getFieldNames[T: TypeTag]: Iterable[String] = { constructor.paramLists.head.map(symbol => symbol.name.toString) }
+  def getFieldNames[T: TypeTag]: Iterable[String] = constructor.paramLists.head.map(symbol ⇒ symbol.name.toString)
 
   private def constructor[T: TypeTag](): universe.MethodSymbol =
     typeTag[T].tpe.members
-      .find { m => m.isMethod && m.asMethod.isConstructor }
-      match {
-      case Some(m) => m.asMethod
-      case _ => throw new Exception(s"No constructor method found for type ${typeTag[T].tpe.toString}")
-    }
+      .find(m ⇒ m.isMethod && m.asMethod.isConstructor) match {
+        case Some(m) ⇒ m.asMethod
+        case _       ⇒ throw new Exception(s"No constructor method found for type ${typeTag[T].tpe}")
+      }
 
 }
 
