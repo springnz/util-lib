@@ -4,12 +4,11 @@ import java.util.Date
 
 import org.joda.time.DateTime
 import org.scalatest._
+import ylabs.util.Pimpers._
 
 class DateTimeUtilTest extends WordSpec with ShouldMatchers {
 
   "DateTimeUtil" should {
-
-    import DateTimeUtil._
 
     "add compare method to OffsetDateTime" in {
       val utcTime = DateTimeUtil.utcDateTime
