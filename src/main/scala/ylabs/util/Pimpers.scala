@@ -46,19 +46,4 @@ object Pimpers {
       }
   }
 
-  // convenient for scalatest comparisons of OffsetDateTime
-  class OrderedOffsetDateTime(offsetDateTime: OffsetDateTime) extends Ordered[OffsetDateTime] {
-    def compare(that: OffsetDateTime): Int = offsetDateTime.compareTo(that)
-  }
-
-  implicit def orderedOffsetDateTime(offsetDateTime: OffsetDateTime): OrderedOffsetDateTime =
-    new OrderedOffsetDateTime(offsetDateTime)
-
-  implicit class OrderedOffsetDateTimePimper(offsetDateTime: OffsetDateTime) {
-    def toLegacyDate: Date = Date.from(offsetDateTime.toInstant)
-  }
-
-  implicit class LegacyDatePimper(date: Date) {
-    def toUtcOffsetDateTime: OffsetDateTime = OffsetDateTime.ofInstant(date.toInstant, DateTimeUtil.utcZone)
-  }
 }
