@@ -19,15 +19,10 @@ object Pimpers {
           Failure(e)
       }
 
-    def withFinally[T](block: ⇒ T): Try[A] =
-      t match {
-        case Success(result: A) ⇒
-          block
-          Success(result)
-        case Failure(e) ⇒
-          block
-          Failure(e)
-      }
+    def withFinally[T](block: ⇒ T): Try[A] = {
+      block
+      t
+    }
   }
 
   implicit class FuturePimper[T](f: Future[T]) {

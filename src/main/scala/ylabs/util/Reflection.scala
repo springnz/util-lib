@@ -1,45 +1,49 @@
 package ylabs.util
 
-import scala.reflect.ClassTag
 import scala.reflect.runtime._
 import scala.reflect.runtime.universe._
+import scala.util.Try
+import Pimpers._
 
-object Reflection {
-  case class ParseOp[T](op: String ⇒ T)
-  implicit val popDouble = ParseOp[Double](_.toDouble)
-  implicit val popInt = ParseOp[Int](_.toInt)
+case class Reflection[T: TypeTag]() extends Logging {
 
-  def createInstance[T: TypeTag](args: Any*): T = {
-    val ruType: universe.Type = typeTag[T].tpe
-    val constructorSymbol: universe.MethodSymbol = constructor[T]
-    val constructorMethod = currentMirror.reflectClass(ruType.typeSymbol.asClass).reflectConstructor(constructorSymbol)
-    constructorMethod(args: _*).asInstanceOf[T]
+  lazy val constructor: universe.MethodSymbol = createConstructor()
+  lazy val parameters: List[universe.Symbol] = constructor.paramLists.head
+
+  def createInstance(args: Any*): Try[T] = {
+    Try[T] {
+      if (args.length < parameters.length)
+        throw new Exception(s"Not enough arguments: - argument list: $args")
+      val ruType: universe.Type = typeTag[T].tpe
+
+      val constructorMethod: universe.MethodMirror =
+        currentMirror.reflectClass(ruType.typeSymbol.asClass).reflectConstructor(constructor)
+
+      constructorMethod(args: _*).asInstanceOf[T]
+    }.withErrorLog(s"Error creating instance of type ${typeTag[T].tpe.toString}")
   }
 
-  def createInstanceFromMap[T: TypeTag](argMap: Map[String, _]): T = {
+  def createInstanceFromMap(argMap: Map[String, _]): Try[T] = {
     val arguments = getFieldDetails map {
       case (name, tpe) ⇒ {
         argMap(name)
       }
     } toSeq
-    implicit def strToInt(x: String) = x.toInt
-    val instance = createInstance[T](arguments: _*)
-    instance
+
+    createInstance(arguments: _*)
   }
 
-  def getFieldDetails[T: TypeTag]: Iterable[(String, Type)] = {
-    val cons: universe.MethodSymbol = constructor[T]()
-    cons.paramLists.head.map(
+  def getFieldDetails: Iterable[(String, Type)] = {
+    parameters.map(
       (symbol: universe.Symbol) ⇒
         (symbol.name.toString, symbol.typeSignature))
   }
 
-  private def constructor[T: TypeTag](): universe.MethodSymbol =
-    typeTag[T].tpe.members
-      .find { m ⇒ m.isMethod && m.asMethod.isConstructor } match {
-        case Some(m) ⇒ m.asMethod
-        case _       ⇒ throw new Exception(s"No constructor method found for type ${typeTag[T].tpe.toString}")
-      }
-
+  private def createConstructor(): universe.MethodSymbol = {
+    val membs: universe.MemberScope = typeTag[T].tpe.members
+    membs.find { m ⇒ m.isMethod && m.asMethod.isPrimaryConstructor } match {
+      case Some(m) ⇒ m.asMethod
+      case _       ⇒ throw new Exception(s"No suitable constructor method found for type ${typeTag[T].tpe.toString}")
+    }
+  }
 }
-
