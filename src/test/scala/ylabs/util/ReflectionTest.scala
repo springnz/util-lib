@@ -25,7 +25,7 @@ class ReflectionTest extends WordSpec with ShouldMatchers {
       person.get shouldBe Person("Bob", 42, "bob@spring.nz")
     }
   }
-   it should {
+  it should {
     "get the constructor arguments / fields of a case class" in {
       val fields = Reflection[Person].getFieldDetails.get map (_._1)
       fields.toList shouldBe List("name", "age", "email")
