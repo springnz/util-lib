@@ -7,13 +7,13 @@ import Pimpers._
 
 case class Reflection[T: TypeTag]() extends Logging {
 
-  lazy val constructor: universe.MethodSymbol = createConstructor()
+  lazy val constructor: universe.MethodSymbol = createConstructor
   lazy val parameters: List[universe.Symbol] = constructor.paramLists.head
 
   def createInstance(args: Any*): Try[T] = {
     Try[T] {
-      if (args.length < parameters.length)
-        throw new Exception(s"Not enough arguments: - argument list: $args")
+      if (args.length != parameters.length)
+        throw new IllegalArgumentException(s"Too many arguments: - argument list: $args")
       val ruType: universe.Type = typeTag[T].tpe
 
       val constructorMethod: universe.MethodMirror =
@@ -24,24 +24,25 @@ case class Reflection[T: TypeTag]() extends Logging {
   }
 
   def createInstanceFromMap(argMap: Map[String, _]): Try[T] = {
-    val arguments = getFieldDetails map {
-      case (name, tpe) ⇒ {
-        argMap(name)
-      }
-    } toSeq
+    val argTry: Try[Seq[Any]] =
+      for {
+        fieldDetails ← getFieldDetails
+      } yield fieldDetails.map {
+        case (name, tpe) ⇒ argMap(name)
+      } toSeq
 
-    createInstance(arguments: _*)
+    argTry.flatMap(args ⇒ createInstance(args: _*))
   }
 
-  def getFieldDetails: Iterable[(String, Type)] = {
-    parameters.map(
-      (symbol: universe.Symbol) ⇒
-        (symbol.name.toString, symbol.typeSignature))
+  def getFieldDetails: Try[Iterable[(String, Type)]] = Try {
+    parameters.map {
+      (symbol: universe.Symbol) ⇒ (symbol.name.toString, symbol.typeSignature)
+    }
   }
 
   private def createConstructor(): universe.MethodSymbol = {
-    val membs: universe.MemberScope = typeTag[T].tpe.members
-    membs.find { m ⇒ m.isMethod && m.asMethod.isPrimaryConstructor } match {
+    val members: universe.MemberScope = typeTag[T].tpe.members
+    members.find { m ⇒ m.isMethod && m.asMethod.isPrimaryConstructor } match {
       case Some(m) ⇒ m.asMethod
       case _       ⇒ throw new Exception(s"No suitable constructor method found for type ${typeTag[T].tpe.toString}")
     }
