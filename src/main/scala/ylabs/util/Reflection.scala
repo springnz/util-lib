@@ -9,21 +9,6 @@ object Reflection {
   implicit val popDouble = ParseOp[Double](_.toDouble)
   implicit val popInt = ParseOp[Int](_.toInt)
 
-  def createInstanceFromMap2[T: ClassTag](argMap: Map[String, Any]): T = {
-    val classTag = implicitly[ClassTag[T]]
-    val constructors = classTag.runtimeClass.getConstructors
-    val consHead = constructors.head
-    val paramTypes = consHead.getAnnotatedParameterTypes
-    val arguments = consHead.getParameters map {
-      paramType ⇒
-        val name = paramType.getName
-        val value = argMap(name)
-        value
-    }
-    val inst = consHead.newInstance(arguments).asInstanceOf[T]
-    inst
-  }
-
   def createInstance[T: TypeTag](args: Any*): T = {
     val ruType: universe.Type = typeTag[T].tpe
     val constructorSymbol: universe.MethodSymbol = constructor[T]
