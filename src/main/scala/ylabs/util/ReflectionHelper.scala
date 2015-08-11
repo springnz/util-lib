@@ -5,7 +5,7 @@ import scala.reflect.runtime.universe._
 import scala.util.Try
 import Pimpers._
 
-case class Reflection[T: TypeTag]() extends Logging {
+case class ReflectionHelper[T: TypeTag]() extends Logging {
 
   lazy val constructor: universe.MethodSymbol = createConstructor
   lazy val parameters: List[universe.Symbol] = constructor.paramLists.head
