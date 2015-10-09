@@ -1,5 +1,5 @@
 name := "util-lib"
-organization := "ylabs"
+organization := "springnz"
 scalaVersion := "2.11.7"
 
 resolvers ++= Seq(

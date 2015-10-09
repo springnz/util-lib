@@ -1,4 +1,4 @@
-package ylabs.util
+package springnz.util
 
 import scala.reflect.runtime._
 import scala.reflect.runtime.universe._
