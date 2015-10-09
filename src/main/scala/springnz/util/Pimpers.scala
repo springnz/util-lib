@@ -1,4 +1,4 @@
-package ylabs.util
+package springnz.util
 
 import java.time.{ Instant ⇒ JInstant, OffsetDateTime }
 import java.util.Date

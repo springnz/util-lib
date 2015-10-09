@@ -1,4 +1,4 @@
-package ylabs.util
+package springnz.util
 
 import com.typesafe.scalalogging.LazyLogging
 

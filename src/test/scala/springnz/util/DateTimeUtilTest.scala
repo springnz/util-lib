@@ -1,10 +1,10 @@
-package ylabs.util
+package springnz.util
 
 import java.util.Date
 
 import org.joda.time.DateTime
 import org.scalatest._
-import ylabs.util.Pimpers._
+import springnz.util.Pimpers._
 
 class DateTimeUtilTest extends WordSpec with ShouldMatchers {
 
