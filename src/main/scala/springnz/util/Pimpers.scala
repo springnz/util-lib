@@ -1,13 +1,13 @@
 package springnz.util
 
-import java.time.{ Instant ⇒ JInstant, OffsetDateTime }
+import java.time.{ Instant ⇒ JInstant, OffsetDateTime, ZonedDateTime }
 import java.util.Date
 
 import com.typesafe.scalalogging.Logger
 import org.joda.time.DateTime
 
 import scala.concurrent.{ ExecutionContext, Future }
-import scala.util.{ Failure, Success, Try }
+import scala.util.{ Failure, Try }
 
 object Pimpers {
 
@@ -53,6 +53,10 @@ object Pimpers {
   implicit class OffsetDateTimePimper(offsetDateTime: OffsetDateTime) {
     def toLegacyDate: Date = Date.from(offsetDateTime.toInstant)
     def toJodaTime: DateTime = DateTime.parse(offsetDateTime.toString)
+  }
+
+  implicit class ZonedDateTimePimper(zonedDateTime: ZonedDateTime) {
+    def toLegacyDate: Date = Date.from(zonedDateTime.toInstant)
   }
 
   implicit class LegacyDatePimper(date: Date) {
