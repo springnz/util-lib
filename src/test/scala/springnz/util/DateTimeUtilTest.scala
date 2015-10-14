@@ -11,7 +11,7 @@ class DateTimeUtilTest extends WordSpec with ShouldMatchers {
   "DateTimeUtil" should {
 
     "add compare method to OffsetDateTime" in {
-      val utcTime = DateTimeUtil.utcDateTime
+      val utcTime = DateTimeUtil.utcOffsetDateTime
       val utcTimeMinus1 = utcTime.minusSeconds(1)
       val utcTimePlus1 = utcTime.plusSeconds(1)
 
@@ -20,7 +20,7 @@ class DateTimeUtilTest extends WordSpec with ShouldMatchers {
     }
 
     "convert OffsetDateTime to legacy date" in {
-      val utcOffsetDateTime = DateTimeUtil.utcDateTime
+      val utcOffsetDateTime = DateTimeUtil.utcOffsetDateTime
       val legacyDate = utcOffsetDateTime.toLegacyDate
       utcOffsetDateTime.toInstant shouldBe legacyDate.toInstant
     }
@@ -32,7 +32,7 @@ class DateTimeUtilTest extends WordSpec with ShouldMatchers {
     }
 
     "convert OffsetDateTime to joda time" in {
-      val utcOffsetDateTime = DateTimeUtil.utcDateTime
+      val utcOffsetDateTime = DateTimeUtil.utcOffsetDateTime
       val jodaTime = utcOffsetDateTime.toJodaTime
       jodaTime.toInstant.toString shouldBe utcOffsetDateTime.toInstant.toString
     }

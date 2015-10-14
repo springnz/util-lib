@@ -60,13 +60,13 @@ object Pimpers {
   }
 
   implicit class LegacyDatePimper(date: Date) {
-    def toUtcOffsetDateTime: OffsetDateTime = OffsetDateTime.ofInstant(date.toInstant, DateTimeUtil.utcZone)
+    def toUtcOffsetDateTime: OffsetDateTime = OffsetDateTime.ofInstant(date.toInstant, DateTimeUtil.UTCTimeZone)
   }
 
   implicit class JodaTimePimper(dateTime: DateTime) {
     def toUtcOffsetDateTime: OffsetDateTime = {
       val jInstant = JInstant.ofEpochMilli(dateTime.toInstant.getMillis)
-      OffsetDateTime.ofInstant(jInstant, DateTimeUtil.utcZone)
+      OffsetDateTime.ofInstant(jInstant, DateTimeUtil.UTCTimeZone)
     }
   }
 }
