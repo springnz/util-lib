@@ -42,5 +42,19 @@ class DateTimeUtilTest extends WordSpec with ShouldMatchers {
       val utcOffsetDateTime = jodaTime.toUtcOffsetDateTime
       utcOffsetDateTime.toInstant.toString shouldBe jodaTime.toInstant.toString
     }
+
+    "convert iso date string to/from LocalDate" in {
+      val isoDate = "2014-03-01"
+      val localDate = DateTimeUtil.isoDateToLocalDate(isoDate)
+      val result = DateTimeUtil.toIsoDate(localDate)
+      result shouldBe isoDate
+    }
+
+    "convert iso datetime string to/from LocalDateTime" in {
+      val isoDateTime = "2014-03-01 13:34:15"
+      val localDateTime = DateTimeUtil.isoDateTimeToLocalDateTime(isoDateTime)
+      val result = DateTimeUtil.toIsoDateTime(localDateTime)
+      result shouldBe isoDateTime
+    }
   }
 }
