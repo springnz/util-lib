@@ -57,4 +57,23 @@ class DateTimeUtilTest extends WordSpec with ShouldMatchers {
       result shouldBe isoDateTime
     }
   }
+
+  "DateTime pimped conversions" should {
+
+    "convert LocalDateTime to/from legacy date" in {
+      val localDateTime = DateTimeUtil.isoDateTimeToLocalDateTime("2015-10-22 13:01:02")
+      val legacyDate = localDateTime.toNZLegacyDate
+      legacyDate.toString shouldBe "Thu Oct 22 13:01:02 NZDT 2015"
+      val convertedLocalDateTime = legacyDate.toNZLocalDateTime
+      convertedLocalDateTime shouldBe localDateTime
+    }
+
+    "convert LocalDate to/from legacy date" in {
+      val localDate = DateTimeUtil.isoDateToLocalDate("2015-10-22")
+      val legacyDate = localDate.toNZLegacyDate
+      legacyDate.toString shouldBe "Thu Oct 22 00:00:00 NZDT 2015"
+      val convertedLocalDate = legacyDate.toNZLocalDate
+      convertedLocalDate shouldBe localDate
+    }
+  }
 }

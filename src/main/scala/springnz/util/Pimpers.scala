@@ -1,6 +1,6 @@
 package springnz.util
 
-import java.time.{ Instant ⇒ JInstant, OffsetDateTime, ZonedDateTime }
+import java.time.{ Instant ⇒ JInstant, LocalDate, LocalDateTime, OffsetDateTime, ZonedDateTime }
 import java.util.Date
 
 import com.typesafe.scalalogging.Logger
@@ -59,8 +59,19 @@ object Pimpers {
     def toLegacyDate: Date = Date.from(zonedDateTime.toInstant)
   }
 
+  implicit class LocalDateTimePimper(localDateTime: LocalDateTime) {
+    def toNZLegacyDate: Date = Date.from(localDateTime.atZone(DateTimeUtil.NZTimeZone).toInstant)
+  }
+
+  implicit class LocalDatePimper(localDate: LocalDate) {
+    def toNZLegacyDate: Date = Date.from(localDate.atStartOfDay().atZone(DateTimeUtil.NZTimeZone).toInstant)
+  }
+
   implicit class LegacyDatePimper(date: Date) {
     def toUtcOffsetDateTime: OffsetDateTime = OffsetDateTime.ofInstant(date.toInstant, DateTimeUtil.UTCTimeZone)
+    def toUtcLocalDateTime: LocalDateTime = LocalDateTime.ofInstant(date.toInstant, DateTimeUtil.UTCTimeZone)
+    def toNZLocalDateTime: LocalDateTime = LocalDateTime.ofInstant(date.toInstant, DateTimeUtil.NZTimeZone)
+    def toNZLocalDate: LocalDate = toNZLocalDateTime.toLocalDate
   }
 
   implicit class JodaTimePimper(dateTime: DateTime) {
