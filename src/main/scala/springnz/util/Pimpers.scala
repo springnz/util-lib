@@ -1,6 +1,6 @@
 package springnz.util
 
-import java.time.{ Instant ⇒ JInstant, LocalDate, LocalDateTime, OffsetDateTime, ZonedDateTime }
+import java.time.{ Instant ⇒ JInstant, _ }
 import java.util.Date
 
 import com.typesafe.scalalogging.Logger
@@ -42,13 +42,26 @@ object Pimpers {
       }
   }
 
-  // convenient for scalatest comparisons
   class OrderedOffsetDateTime(offsetDateTime: OffsetDateTime) extends Ordered[OffsetDateTime] {
     def compare(that: OffsetDateTime): Int = offsetDateTime.compareTo(that)
   }
 
   implicit def orderedOffsetDateTime(offsetDateTime: OffsetDateTime): OrderedOffsetDateTime =
     new OrderedOffsetDateTime(offsetDateTime)
+
+  class OrderedLocalDateTime(localDateTime: LocalDateTime) extends Ordered[LocalDateTime] {
+    def compare(that: LocalDateTime): Int = localDateTime.compareTo(that)
+  }
+
+  implicit def orderedLocalDateTime(localDateTime: LocalDateTime): OrderedLocalDateTime =
+    new OrderedLocalDateTime(localDateTime)
+
+  class OrderedLocalDate(localDate: LocalDate) extends Ordered[LocalDate] {
+    def compare(that: LocalDate): Int = localDate.compareTo(that)
+  }
+
+  implicit def orderedLocalDate(localDate: LocalDate): OrderedLocalDate =
+    new OrderedLocalDate(localDate)
 
   implicit class OffsetDateTimePimper(offsetDateTime: OffsetDateTime) {
     def toLegacyDate: Date = Date.from(offsetDateTime.toInstant)

@@ -10,15 +10,6 @@ class DateTimeUtilTest extends WordSpec with ShouldMatchers {
 
   "DateTimeUtil" should {
 
-    "add compare method to OffsetDateTime" in {
-      val utcTime = DateTimeUtil.utcOffsetDateTime
-      val utcTimeMinus1 = utcTime.minusSeconds(1)
-      val utcTimePlus1 = utcTime.plusSeconds(1)
-
-      utcTime.compare(utcTimeMinus1) shouldBe 1
-      utcTime.compare(utcTimePlus1) shouldBe -1
-    }
-
     "convert OffsetDateTime to legacy date" in {
       val utcOffsetDateTime = DateTimeUtil.utcOffsetDateTime
       val legacyDate = utcOffsetDateTime.toLegacyDate
@@ -58,7 +49,7 @@ class DateTimeUtilTest extends WordSpec with ShouldMatchers {
     }
   }
 
-  "DateTime pimped conversions" should {
+  "DateTime pimper" should {
 
     "convert LocalDateTime to/from legacy date" in {
       val localDateTime = DateTimeUtil.isoDateTimeToLocalDateTime("2015-10-22 13:01:02")
@@ -74,6 +65,33 @@ class DateTimeUtilTest extends WordSpec with ShouldMatchers {
       legacyDate.toString shouldBe "Thu Oct 22 00:00:00 NZDT 2015"
       val convertedLocalDate = legacyDate.toNZLocalDate
       convertedLocalDate shouldBe localDate
+    }
+
+    "add compare method to OffsetDateTime" in {
+      val utcTime = DateTimeUtil.utcOffsetDateTime
+      val utcTimeMinus1 = utcTime.minusSeconds(1)
+      val utcTimePlus1 = utcTime.plusSeconds(1)
+
+      utcTime.compare(utcTimeMinus1) shouldBe 1
+      utcTime.compare(utcTimePlus1) shouldBe -1
+    }
+
+    "add compare method to LocalDateTime" in {
+      val timestamp = DateTimeUtil.isoDateTimeToLocalDateTime("2015-10-22 13:42:30")
+      val timestampMinus1 = timestamp.minusSeconds(1)
+      val timestampPlus1 = timestamp.plusSeconds(1)
+
+      timestamp.compare(timestampMinus1) shouldBe 1
+      timestamp.compare(timestampPlus1) shouldBe -1
+    }
+
+    "add compare method to LocalTime" in {
+      val timestamp = DateTimeUtil.isoDateToLocalDate("2015-10-22")
+      val timestampMinus1 = timestamp.minusDays(1)
+      val timestampPlus1 = timestamp.plusDays(1)
+
+      timestamp.compare(timestampMinus1) shouldBe 1
+      timestamp.compare(timestampPlus1) shouldBe -1
     }
   }
 }
