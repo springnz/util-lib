@@ -3,6 +3,8 @@ package springnz.util
 import org.scalatest._
 import play.api.libs.json._
 
+import scala.collection.mutable.ListBuffer
+
 class JsUtilTest extends WordSpec with ShouldMatchers {
 
   // Generated using http://www.json-generator.com/
@@ -67,28 +69,69 @@ class JsUtilTest extends WordSpec with ShouldMatchers {
                |      }
                |    ]
                |  }
-               |]""".stripMargin('|')
-
+               |]""".stripMargin
 
   "JsUtil" should {
+
+    "unwrap json to two levels" in {
+      val json =
+        """|
+          |[
+          |  {
+          |    "id": 1,
+          |    "name": "Bob",
+          |    "friends": [
+          |      {
+          |        "id": 1,
+          |        "name": "Jim"
+          |      },
+          |      {
+          |        "id": 2,
+          |        "name": "Rosanna"
+          |      }
+          |    ]
+          |  },
+          |  {
+          |    "id": 2,
+          |    "name": "Jim",
+          |    "friends": [
+          |      {
+          |        "id": 1,
+          |        "name": "Bob"
+          |      }
+          |    ]
+          |  }
+          |]
+        """.stripMargin
+      val parsedJson = Json.parse(json)
+      val unwrapped = JsUtil.unwrapFromJs(parsedJson, 2)
+      val expected = ListBuffer(
+        Map("id" -> 1, "name" -> "Bob", "friends" -> """[{"id":1,"name":"Jim"},{"id":2,"name":"Rosanna"}]"""),
+        Map("id" -> 2, "name" -> "Jim", "friends" -> """[{"id":1,"name":"Bob"}]""")
+      )
+      unwrapped shouldBe expected
+    }
+
     "unwrap json with full recursion" in {
       val parsedJson = Json.parse(json)
       val unwrapped = JsUtil.unwrapFromJs(parsedJson)
       unwrapped shouldBe a[Seq[_]]
       val unwrappedSeq = unwrapped.asInstanceOf[Seq[Any]]
       unwrappedSeq.length shouldBe 2
-      unwrappedSeq.head shouldBe a[Map[String,_]]
-      val first = unwrappedSeq.head.asInstanceOf[Map[String,Any]]
+      unwrappedSeq.head shouldBe a[Map[String, _]]
+      val first = unwrappedSeq.head.asInstanceOf[Map[String, Any]]
       first.get("friends").get shouldBe a[Seq[_]]
       first.get("age").get shouldBe 32
       first.get("gender").get shouldBe "male"
     }
+
     "unwrap json with partial recursion" in {
       val parsedJson = Json.parse(json)
       val unwrapped = JsUtil.unwrapFromJs(parsedJson, 2)
       val unwrappedSeq = unwrapped.asInstanceOf[Seq[Any]]
-      val first = unwrappedSeq.head.asInstanceOf[Map[String,Any]]
+      val first = unwrappedSeq.head.asInstanceOf[Map[String, Any]]
       first.get("friends").get shouldBe """[{"id":0,"name":"Delia Haynes"},{"id":1,"name":"Clark Moore"},{"id":2,"name":"Rosanna Anderson"}]"""
     }
+
   }
 }
