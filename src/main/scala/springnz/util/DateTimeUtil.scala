@@ -15,6 +15,8 @@ object DateTimeUtil {
 
   def utcOffsetDateTime: OffsetDateTime = OffsetDateTime.now(UTCTimeZone)
 
+  def nzLocalDateTime: LocalDateTime = OffsetDateTime.now(NZTimeZone).toLocalDateTime
+
   def utcZonedDateTime: ZonedDateTime = ZonedDateTime.now(UTCTimeZone)
 
   def toIsoDate(localDate: LocalDate): String = localDate.format(isoDateFormatter)
