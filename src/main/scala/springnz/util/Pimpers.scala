@@ -1,6 +1,6 @@
 package springnz.util
 
-import java.time.{Instant => JInstant, _}
+import java.time.{Instant ⇒ JInstant, _}
 import java.util.Date
 
 import com.typesafe.scalalogging.Logger
