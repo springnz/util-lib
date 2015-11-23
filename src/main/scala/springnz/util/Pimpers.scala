@@ -1,14 +1,14 @@
 package springnz.util
 
-import java.time.{ Instant ⇒ JInstant, _ }
+import java.time.{Instant => JInstant, _}
 import java.util.Date
 
 import com.typesafe.scalalogging.Logger
 import org.joda.time.DateTime
 
 import scala.annotation.tailrec
-import scala.concurrent.{ ExecutionContext, Future }
-import scala.util.{ Failure, Try }
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success, Try}
 
 object Pimpers {
 
@@ -114,6 +114,20 @@ object Pimpers {
       case Some(head) ⇒ map.get(head) match {
         case None  ⇒ getFirst(seqA.tail: _*)
         case value ⇒ value
+      }
+    }
+  }
+
+  implicit class ListTryPimper[A](seqTry: List[Try[A]]) {
+    def sequence(): Try[List[A]] = {
+      val empty: Try[List[A]] = Success(List.empty)
+
+      seqTry.foldRight(empty) {
+        case (triedValue, triedResults) ⇒
+          for {
+            nextResult ← triedValue
+            previousResults ← triedResults
+          } yield nextResult :: previousResults
       }
     }
   }
