@@ -1,14 +1,14 @@
 package springnz.util
 
-import java.time.{Instant ⇒ JInstant, _}
+import java.time.{ Instant ⇒ JInstant, _ }
 import java.util.Date
 
 import com.typesafe.scalalogging.Logger
 import org.joda.time.DateTime
 
 import scala.annotation.tailrec
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success, Try}
+import scala.concurrent.{ ExecutionContext, Future }
+import scala.util.{ Failure, Success, Try }
 
 object Pimpers {
 
