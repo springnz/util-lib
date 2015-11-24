@@ -118,16 +118,16 @@ object Pimpers {
     }
   }
 
-  implicit class ListTryPimper[A](seqTry: List[Try[A]]) {
-    def sequence(): Try[List[A]] = {
-      val empty: Try[List[A]] = Success(List.empty)
+  implicit class TraversableTryPimper[A](travTry: Traversable[Try[A]]) {
+    def sequence(): Try[Traversable[A]] = {
+      val empty: Try[Traversable[A]] = Success(Traversable.empty)
 
-      seqTry.foldRight(empty) {
+      travTry.foldRight(empty) {
         case (triedValue, triedResults) ⇒
           for {
             nextResult ← triedValue
             previousResults ← triedResults
-          } yield nextResult :: previousResults
+          } yield Traversable(nextResult) ++ previousResults
       }
     }
   }
