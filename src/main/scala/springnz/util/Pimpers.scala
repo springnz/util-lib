@@ -8,7 +8,7 @@ import org.joda.time.DateTime
 
 import scala.annotation.tailrec
 import scala.concurrent.{ ExecutionContext, Future }
-import scala.util.{ Failure, Try }
+import scala.util.{ Failure, Success, Try }
 
 object Pimpers {
 
@@ -114,6 +114,20 @@ object Pimpers {
       case Some(head) ⇒ map.get(head) match {
         case None  ⇒ getFirst(seqA.tail: _*)
         case value ⇒ value
+      }
+    }
+  }
+
+  implicit class TraversableTryPimper[A](travTry: Traversable[Try[A]]) {
+    def sequence(): Try[Traversable[A]] = {
+      val empty: Try[Traversable[A]] = Success(Traversable.empty)
+
+      travTry.foldRight(empty) {
+        case (triedValue, triedResults) ⇒
+          for {
+            nextResult ← triedValue
+            previousResults ← triedResults
+          } yield Traversable(nextResult) ++ previousResults
       }
     }
   }
