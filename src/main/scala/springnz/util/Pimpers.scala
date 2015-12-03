@@ -34,9 +34,8 @@ object Pimpers {
       f
     }
 
-    def followedBy[S](f2: Future[S])(implicit ec: ExecutionContext) = {
+    def followedBy[S](f2: Future[S])(implicit ec: ExecutionContext) =
       f.fallbackTo(Future.successful()).flatMap(_ => f2)
-    }
   }
 
   implicit class OptionPimper[T](o: Option[T]) {
