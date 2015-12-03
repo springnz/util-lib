@@ -33,7 +33,3 @@ class TryListPimperTest extends WordSpec with ShouldMatchers {
     }
   }
 }
-
-
-
-
