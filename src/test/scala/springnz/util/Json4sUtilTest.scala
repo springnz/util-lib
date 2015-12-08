@@ -1,11 +1,13 @@
 package springnz.util
 
 import org.scalatest._
-import play.api.libs.json._
 
 import scala.collection.mutable.ListBuffer
+import org.json4s._
+import org.json4s.jackson.JsonMethods._
 
-class JsUtilTest extends WordSpec with ShouldMatchers {
+class Json4sUtilTest extends WordSpec with ShouldMatchers {
+  import Json4sUtil._
 
   // Generated using http://www.json-generator.com/
   val json = """[
@@ -103,8 +105,8 @@ class JsUtilTest extends WordSpec with ShouldMatchers {
           |  }
           |]
         """.stripMargin
-      val parsedJson = Json.parse(json)
-      val unwrapped = JsUtil.unwrapFromJs(parsedJson, 2)
+      val parsedJson = parse(json)
+      val unwrapped = parsedJson.toMap(2)
       val expected = ListBuffer(
         Map("id" -> 1, "name" -> "Bob", "friends" -> """[{"id":1,"name":"Jim"},{"id":2,"name":"Rosanna"}]"""),
         Map("id" -> 2, "name" -> "Jim", "friends" -> """[{"id":1,"name":"Bob"}]""")
@@ -113,8 +115,8 @@ class JsUtilTest extends WordSpec with ShouldMatchers {
     }
 
     "unwrap json with full recursion" in {
-      val parsedJson = Json.parse(json)
-      val unwrapped = JsUtil.unwrapFromJs(parsedJson)
+      val parsedJson = parse(json)
+      val unwrapped = parsedJson.toMap()
       unwrapped shouldBe a[Seq[_]]
       val unwrappedSeq = unwrapped.asInstanceOf[Seq[Any]]
       unwrappedSeq.length shouldBe 2
@@ -126,12 +128,22 @@ class JsUtilTest extends WordSpec with ShouldMatchers {
     }
 
     "unwrap json with partial recursion" in {
-      val parsedJson = Json.parse(json)
-      val unwrapped = JsUtil.unwrapFromJs(parsedJson, 2)
+      val parsedJson = parse(json)
+      val unwrapped = parsedJson.toMap(2)
       val unwrappedSeq = unwrapped.asInstanceOf[Seq[Any]]
       val first = unwrappedSeq.head.asInstanceOf[Map[String, Any]]
       first.get("friends").get shouldBe """[{"id":0,"name":"Delia Haynes"},{"id":1,"name":"Clark Moore"},{"id":2,"name":"Rosanna Anderson"}]"""
     }
 
+    "extract values" in {
+      (parse(""" { "key": "value" } """) \ "key").getString shouldBe Some("value")
+      (parse(""" { "key": "value" } """) \ "key").getInt shouldBe None
+      (parse(""" { "key": true } """) \ "key").getBoolean shouldBe Some(true)
+      (parse(""" { "key": 12345 } """) \ "key").getInt shouldBe Some(12345)
+      (parse(""" { "key": 12345 } """) \ "key").getLong shouldBe Some(12345L)
+      (parse(""" { "key": 123.45 } """) \ "key").getDouble shouldBe Some(123.45)
+      (parse(""" { "key": 12345 } """) \ "key").getBigInt shouldBe Some(BigInt(12345))
+      (parse(""" { "key": 123.45 } """, useBigDecimalForDouble = true) \ "key").getDecimal shouldBe Some(BigDecimal(123.45))
+    }
   }
 }
