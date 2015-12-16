@@ -4,10 +4,10 @@ import org.scalatest._
 import springnz.util.Pimpers._
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent._
 import scala.concurrent.duration._
-import scala.concurrent.{Await, Future}
 
-class PimperTest extends WordSpec with ShouldMatchers {
+class PimperTest extends WordSpec with ShouldMatchers with Logging {
   "FuturePimper" should {
     "followedBy executes second future even if first fails" in {
       val f1 = Future { println("one"); throw new Exception }
@@ -19,4 +19,6 @@ class PimperTest extends WordSpec with ShouldMatchers {
       result shouldBe 2
     }
   }
+
 }
+
