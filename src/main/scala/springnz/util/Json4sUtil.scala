@@ -82,4 +82,18 @@ object Json4sUtil {
     }
   }
 
+  // Takes a list of json entities, and checks if each field has the same value across all entities.
+  // Returns the fields which have different values.
+  def diff(jsonList: Seq[JValue]): Set[String] = {
+    val numElements = jsonList.size
+    val jsonMaps = jsonList.map(_.toMap().asInstanceOf[Map[String, Any]])
+    val fieldNames = jsonMaps.flatMap(_.keys).toSet
+    for {
+      fieldName ← fieldNames
+      values = jsonMaps.flatMap(_.get(fieldName))
+      if values.size != numElements || (values.size == numElements && values.distinct.size > 1)
+    } yield {
+      fieldName
+    }
+  }
 }
