@@ -145,13 +145,5 @@ class Json4sUtilTest extends WordSpec with ShouldMatchers {
       (parse(""" { "key": 12345 } """) \ "key").getBigInt shouldBe Some(BigInt(12345))
       (parse(""" { "key": 123.45 } """, useBigDecimalForDouble = true) \ "key").getDecimal shouldBe Some(BigDecimal(123.45))
     }
-
-    "compare fields" in {
-      val json1 = parse(""" { "sameKey1": "a", "sameKey2": "b", "diffKey1": "a", "diffKey2": "c" } """)
-      val json2 = parse(""" { "sameKey1": "a", "sameKey2": "b", "diffKey1": "b", "diffKey2": "d" } """)
-      val json3 = parse(""" { "sameKey1": "a", "sameKey2": "b", "diffKey1": "b", "diffKey3": "d" } """)
-
-      diff(List(json1, json2, json3)) shouldBe Set("diffKey1", "diffKey2", "diffKey3")
-    }
   }
 }
