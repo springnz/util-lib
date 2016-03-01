@@ -5,9 +5,9 @@ import scala.reflect.runtime.universe._
 import scala.util.Try
 import Pimpers._
 
-case class ClassReader[T <: AnyRef : TypeTag]() extends Logging {
+case class ClassReader[T <: AnyRef: TypeTag]() extends Logging {
 
-  lazy val constructor: universe.MethodSymbol = createConstructor
+  lazy val constructor: universe.MethodSymbol = createConstructor()
   lazy val parameters: List[universe.Symbol] = constructor.paramLists.head
 
   def createInstance(args: Any*): Try[T] = {
@@ -29,7 +29,7 @@ case class ClassReader[T <: AnyRef : TypeTag]() extends Logging {
         fieldDetails ← getFieldDetails
       } yield fieldDetails.map {
         case (name, tpe) ⇒ argMap(name)
-      } toSeq
+      }.toSeq
 
     argTry.flatMap(args ⇒ createInstance(args: _*))
   }
