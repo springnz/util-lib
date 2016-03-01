@@ -11,7 +11,7 @@ class IOUtilTest extends WordSpec with ShouldMatchers {
       val fileContent = Seq("line1", "line2")
 
       IOUtil.writeTextFile(tmpFileName, fileContent.mkString("\n"))
-      IOUtil.readTextFile(tmpFileName) shouldBe fileContent
+      IOUtil.readTextFile(tmpFileName).toSeq shouldBe fileContent
     }
   }
 }

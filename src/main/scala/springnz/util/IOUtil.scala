@@ -8,8 +8,8 @@ import scala.io.Source
 
 object IOUtil {
 
-  def readTextFile(filename: String): Seq[String] =
-    Source.fromFile(filename).getLines().toSeq
+  def readTextFile(filename: String): Iterator[String] =
+    Source.fromFile(filename).getLines()
 
   def writeTextFile(filename: String, content: String): Path =
     Files.write(Paths.get(filename), content.getBytes(StandardCharsets.UTF_8))
