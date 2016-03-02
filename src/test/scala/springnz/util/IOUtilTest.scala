@@ -8,10 +8,10 @@ class IOUtilTest extends WordSpec with ShouldMatchers {
     "create tmp file, write and read file" in {
       val tmpFile = IOUtil.createTempFile()
       val tmpFileName = tmpFile.toString
-      val fileContent = Seq("line1", "line2")
+      val fileContent = "line1\nline2"
 
-      IOUtil.writeTextFile(tmpFileName, fileContent.mkString("\n"))
-      IOUtil.readTextFile(tmpFileName).toSeq shouldBe fileContent
+      IOUtil.writeTextFile(tmpFileName, fileContent)
+      IOUtil.readTextFile(tmpFileName) shouldBe fileContent
     }
   }
 }

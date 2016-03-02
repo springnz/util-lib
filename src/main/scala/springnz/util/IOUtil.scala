@@ -8,7 +8,10 @@ import scala.io.Source
 
 object IOUtil {
 
-  def readTextFile(filename: String): Iterator[String] =
+  def readTextFile(filename: String): String =
+    readLines(filename).mkString("\n")
+
+  def readLines(filename: String): Iterator[String] =
     Source.fromFile(filename).getLines()
 
   def writeTextFile(filename: String, content: String): Path =
