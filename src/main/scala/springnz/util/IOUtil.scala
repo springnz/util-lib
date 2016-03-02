@@ -17,6 +17,11 @@ object IOUtil {
   def writeTextFile(filename: String, content: String): Path =
     Files.write(Paths.get(filename), content.getBytes(StandardCharsets.UTF_8))
 
+  def writeToTmpFile(contents: String): Path = {
+    val path = createTempFile()
+    Files.write(path, contents.getBytes(StandardCharsets.UTF_8))
+  }
+
   def createTempFile(): Path = {
     val tmp = System.getProperty("java.io.tmpdir")
     java.nio.file.Files.createTempFile(Paths.get(tmp), "", "")
