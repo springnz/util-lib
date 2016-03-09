@@ -42,7 +42,7 @@ class DateTimeUtilTest extends WordSpec with ShouldMatchers {
     }
 
     "convert iso datetime string to/from LocalDateTime" in {
-      val isoDateTime = "2014-03-01 13:34:15"
+      val isoDateTime = "2014-03-01T13:34:15"
       val localDateTime = DateTimeUtil.isoDateTimeToLocalDateTime(isoDateTime)
       val result = DateTimeUtil.toIsoDateTime(localDateTime)
       result shouldBe isoDateTime
@@ -52,7 +52,7 @@ class DateTimeUtilTest extends WordSpec with ShouldMatchers {
   "DateTime pimper" should {
 
     "convert LocalDateTime to/from legacy date" in {
-      val localDateTime = DateTimeUtil.isoDateTimeToLocalDateTime("2015-10-22 13:01:02")
+      val localDateTime = DateTimeUtil.isoDateTimeToLocalDateTime("2015-10-22T13:01:02")
       val legacyDate = localDateTime.toNZLegacyDate
       legacyDate.toString shouldBe "Thu Oct 22 13:01:02 NZDT 2015"
       val convertedLocalDateTime = legacyDate.toNZLocalDateTime
@@ -77,7 +77,7 @@ class DateTimeUtilTest extends WordSpec with ShouldMatchers {
     }
 
     "add compare method to LocalDateTime" in {
-      val timestamp = DateTimeUtil.isoDateTimeToLocalDateTime("2015-10-22 13:42:30")
+      val timestamp = DateTimeUtil.isoDateTimeToLocalDateTime("2015-10-22T13:42:30")
       val timestampMinus1 = timestamp.minusSeconds(1)
       val timestampPlus1 = timestamp.plusSeconds(1)
 

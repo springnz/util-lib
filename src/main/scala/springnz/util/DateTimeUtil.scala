@@ -10,10 +10,6 @@ object DateTimeUtil {
   lazy val UTCTimeZone: ZoneId = ZoneId.of("UTC")
   lazy val NZTimeZone: ZoneId = ZoneId.of("Pacific/Auckland")
 
-  lazy val isoDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-  lazy val isoDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-  lazy val isoDateTimeWithOffsetFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ")
-
   def utcOffsetDateTime: OffsetDateTime = OffsetDateTime.now(UTCTimeZone)
 
   def nzOffsetDateTime: OffsetDateTime = OffsetDateTime.now(NZTimeZone)
@@ -22,25 +18,25 @@ object DateTimeUtil {
 
   def utcZonedDateTime: ZonedDateTime = ZonedDateTime.now(UTCTimeZone)
 
-  def toIsoDate(localDate: LocalDate): String = localDate.format(isoDateFormatter)
+  def toIsoDate(localDate: LocalDate): String = localDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
 
-  def toIsoDate(zonedDateTime: ZonedDateTime): String = zonedDateTime.format(isoDateFormatter)
+  def toIsoDate(zonedDateTime: ZonedDateTime): String = zonedDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE)
 
-  def toIsoDate(offsetDateTime: OffsetDateTime): String = offsetDateTime.format(isoDateFormatter)
+  def toIsoDate(offsetDateTime: OffsetDateTime): String = offsetDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE)
 
   def toIsoDate(dateTime: DateTime): String = dateTime.toString("yyyy-MM-dd")
 
-  def toIsoDateTime(localDate: LocalDate): String = localDate.format(isoDateTimeFormatter)
+  def toIsoDateTime(localDate: LocalDate): String = localDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
 
-  def toIsoDateTime(localDateTime: LocalDateTime): String = localDateTime.format(isoDateTimeFormatter)
+  def toIsoDateTime(localDateTime: LocalDateTime): String = localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
 
-  def toIsoDateTime(zonedDateTime: ZonedDateTime): String = zonedDateTime.format(isoDateTimeFormatter)
+  def toIsoZonedDateTime(zonedDateTime: ZonedDateTime): String = zonedDateTime.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
 
-  def toIsoDateTime(offsetDateTime: OffsetDateTime): String = offsetDateTime.format(isoDateTimeWithOffsetFormatter)
+  def toIsoOffsetDateTime(offsetDateTime: OffsetDateTime): String = offsetDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
 
-  def toIsoDateTime(dateTime: DateTime): String = dateTime.toString("yyyy-MM-dd hh:mm:ss")
+  def toIsoDateTime(dateTime: DateTime): String = dateTime.toString("yyyy-MM-dd'T'hh:mm:ss")
 
-  def isoDateToLocalDate(isoDate: String): LocalDate = LocalDate.parse(isoDate, isoDateFormatter)
+  def isoDateToLocalDate(isoDate: String): LocalDate = LocalDate.parse(isoDate, DateTimeFormatter.ISO_LOCAL_DATE)
 
-  def isoDateTimeToLocalDateTime(isoDateTime: String): LocalDateTime = LocalDateTime.parse(isoDateTime, isoDateTimeFormatter)
+  def isoDateTimeToLocalDateTime(isoDateTime: String): LocalDateTime = LocalDateTime.parse(isoDateTime, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
 }
