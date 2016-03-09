@@ -7,13 +7,16 @@ import org.joda.time.DateTime
 
 object DateTimeUtil {
 
-  val UTCTimeZone: ZoneId = ZoneId.of("UTC")
-  val NZTimeZone: ZoneId = ZoneId.of("Pacific/Auckland")
+  lazy val UTCTimeZone: ZoneId = ZoneId.of("UTC")
+  lazy val NZTimeZone: ZoneId = ZoneId.of("Pacific/Auckland")
 
-  val isoDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-  val isoDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+  lazy val isoDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+  lazy val isoDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+  lazy val isoDateTimeWithOffsetFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ")
 
   def utcOffsetDateTime: OffsetDateTime = OffsetDateTime.now(UTCTimeZone)
+
+  def nzOffsetDateTime: OffsetDateTime = OffsetDateTime.now(NZTimeZone)
 
   def nzLocalDateTime: LocalDateTime = OffsetDateTime.now(NZTimeZone).toLocalDateTime
 
@@ -33,7 +36,7 @@ object DateTimeUtil {
 
   def toIsoDateTime(zonedDateTime: ZonedDateTime): String = zonedDateTime.format(isoDateTimeFormatter)
 
-  def toIsoDateTime(offsetDateTime: OffsetDateTime): String = offsetDateTime.format(isoDateTimeFormatter)
+  def toIsoDateTime(offsetDateTime: OffsetDateTime): String = offsetDateTime.format(isoDateTimeWithOffsetFormatter)
 
   def toIsoDateTime(dateTime: DateTime): String = dateTime.toString("yyyy-MM-dd hh:mm:ss")
 
