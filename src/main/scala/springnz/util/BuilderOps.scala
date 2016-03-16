@@ -9,6 +9,10 @@ object BuilderOps {
 
     def setIfNonEmpty(value: String, setMethod: (A, String) ⇒ A) =
       if (value.isEmpty) builder else setMethod(builder, value)
+
+    def setFoldLeft[B](iterable: Iterable[B], setMethod: (A, B) ⇒ A): A = {
+      iterable.foldLeft(builder)(setMethod)
+    }
   }
 }
 

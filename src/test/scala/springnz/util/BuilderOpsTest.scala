@@ -28,5 +28,13 @@ class BuilderOpsTest extends WordSpec with ShouldMatchers {
       val newList = list.setIfNonEmpty("", (list, value) => value :: list)
       newList should be theSameInstanceAs list
     }
+
+    "foldleft Set" in {
+      val list: List[String] = List("C", "B", "A")
+      val newList = List("D").setFoldLeft(list, (list, value: String) => value :: list)
+      newList shouldBe List("A", "B", "C", "D")
+    }
+
+
   }
 }
