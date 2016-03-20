@@ -80,6 +80,15 @@ object Json4sUtil {
 
       toMapRecursive(jValue, depth)
     }
-  }
 
+    def toMapStringAny =
+      jValue match {
+        case _: JObject ⇒
+          toMap().asInstanceOf[Map[String, Any]]
+        case _: JArray =>
+          throw new IllegalArgumentException("Input is a JArray, but only a JObject can be converted to Map[String, Any]")
+        case other ⇒
+          throw new IllegalArgumentException("Only a JObject can be converted to Map[String, Any]")
+      }
+  }
 }

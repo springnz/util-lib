@@ -145,5 +145,14 @@ class Json4sUtilTest extends WordSpec with ShouldMatchers {
       (parse(""" { "key": 12345 } """) \ "key").getBigInt shouldBe Some(BigInt(12345))
       (parse(""" { "key": 123.45 } """, useBigDecimalForDouble = true) \ "key").getDecimal shouldBe Some(BigDecimal(123.45))
     }
+
+    "convert to Map[String, Any]" in {
+      val map = parse(""" { "field": 1 } """).toMapStringAny
+      map("field") shouldBe 1
+
+      intercept[IllegalArgumentException] {
+        parse(""" [ {} ] """).toMapStringAny
+      }
+    }
   }
 }
