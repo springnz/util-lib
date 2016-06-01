@@ -10,6 +10,7 @@ object ConfigEnvironment extends Logging {
     val rootConfig = ConfigFactory.load()
     val sharedPrefix: Option[String] = Try { rootConfig.getString("config-shared-prefix") }.toOption
     val environmentPrefix: Option[String] = Try { rootConfig.getString("config-environment-prefix") }.toOption
+    val overridePrefix: Option[String] = Try { rootConfig.getString("config-override-prefix") }.toOption
 
     sharedPrefix.foreach { prefix ⇒
       log.info(s"Using shared config prefix [$prefix]")
@@ -21,8 +22,9 @@ object ConfigEnvironment extends Logging {
 
     val optionalSharedConfig = sharedPrefix.map(rootConfig.getConfig)
     val optionalEnvironmentConfig = environmentPrefix.map(rootConfig.getConfig)
+    val overrideEnvironmentConfig = overridePrefix.map(rootConfig.getConfig)
 
-    (optionalEnvironmentConfig, optionalSharedConfig) match {
+    val configEnv = (optionalEnvironmentConfig, optionalSharedConfig) match {
       case (Some(environmentConfig), Some(sharedConfig)) ⇒
         environmentConfig.withFallback(sharedConfig)
       case (Some(environmentConfig), None) ⇒
@@ -33,5 +35,7 @@ object ConfigEnvironment extends Logging {
         log.info("Using root config")
         ConfigFactory.load()
     }
+
+    overrideEnvironmentConfig.fold(configEnv)(_.withFallback(configEnv))
   }
 }
