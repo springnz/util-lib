@@ -1,12 +1,12 @@
 package springnz.util
 
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 
 import scala.util.Try
 
 object ConfigEnvironment extends Logging {
 
-  val config = {
+  val config: Config = {
     val rootConfig = ConfigFactory.load()
     val sharedPrefix: Option[String] = Try { rootConfig.getString("config-shared-prefix") }.toOption
     val environmentPrefix: Option[String] = Try { rootConfig.getString("config-environment-prefix") }.toOption
@@ -20,9 +20,11 @@ object ConfigEnvironment extends Logging {
       log.info(s"Using environment config prefix [$prefix]")
     }
 
-    val optionalSharedConfig = sharedPrefix.map(rootConfig.getConfig)
-    val optionalEnvironmentConfig = environmentPrefix.map(rootConfig.getConfig)
-    val overrideEnvironmentConfig = overridePrefix.map(rootConfig.getConfig)
+    def getConfig(configString: Option[String]) = Try { configString.map(rootConfig.getConfig) }.toOption.flatten
+
+    val optionalSharedConfig = getConfig(sharedPrefix)
+    val optionalEnvironmentConfig = getConfig(environmentPrefix)
+    val overrideEnvironmentConfig = getConfig(overridePrefix)
 
     val configEnv = (optionalEnvironmentConfig, optionalSharedConfig) match {
       case (Some(environmentConfig), Some(sharedConfig)) ⇒
@@ -36,6 +38,6 @@ object ConfigEnvironment extends Logging {
         ConfigFactory.load()
     }
 
-    overrideEnvironmentConfig.fold(configEnv)(_.withFallback(configEnv))
+    overrideEnvironmentConfig.map(_.withFallback(configEnv)).getOrElse(configEnv)
   }
 }
