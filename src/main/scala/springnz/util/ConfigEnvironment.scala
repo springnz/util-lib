@@ -6,7 +6,7 @@ import scala.util.Try
 
 object ConfigEnvironment extends Logging {
 
-  val config: Config = {
+  lazy val config: Config = {
     val rootConfig = ConfigFactory.load()
     val sharedPrefix: Option[String] = Try { rootConfig.getString("config-shared-prefix") }.toOption
     val environmentPrefix: Option[String] = Try { rootConfig.getString("config-environment-prefix") }.toOption
@@ -18,6 +18,10 @@ object ConfigEnvironment extends Logging {
 
     environmentPrefix.foreach { prefix ⇒
       log.info(s"Using environment config prefix [$prefix]")
+    }
+
+    overridePrefix.foreach { prefix ⇒
+      log.info(s"Using override config prefix [$prefix] (for environment variables)")
     }
 
     def getConfig(configString: Option[String]) = Try { configString.map(rootConfig.getConfig) }.toOption.flatten
