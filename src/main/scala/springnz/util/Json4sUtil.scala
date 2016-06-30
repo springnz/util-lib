@@ -73,7 +73,7 @@ object Json4sUtil {
           case JInt(number)    ⇒ number
           case JBool(bool)     ⇒ bool
           case JArray(array)   ⇒ valOrStr(innerJs, array map { toMapRecursive(_, level - 1) })
-          case JObject(inner)  ⇒ valOrStr(innerJs, inner.toMap.mapValues { toMapRecursive(_, level - 1) })
+          case JObject(inner)  ⇒ valOrStr(innerJs, inner.toMap.mapValues { toMapRecursive(_, level - 1) }.map(identity))
           case other           ⇒ compact(other)
         }
       }
